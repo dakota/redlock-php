@@ -1,8 +1,11 @@
 redlock-php - Redis distributed locks in PHP
 
-Based on [Redlock-rb](https://github.com/antirez/redlock-rb) by [Salvatore Sanfilippo](https://github.com/antirez)
+* Forked from [redlock-php](https://github.com/ronnylt/redlock-php) by [Ronny Lopez](https://github.com/ronnylt)
+* Based on [Redlock-rb](https://github.com/antirez/redlock-rb) by [Salvatore Sanfilippo](https://github.com/antirez)
 
-This library implements the Redis-based distributed lock manager algorithm [described in this blog post](http://antirez.com/news/77).
+This library implements the Redis-based distributed lock manager algorithm [described on the Redis website](https://redis.io/topics/distlock).
+
+It relies on [Credis](https://github.com/colinmollenhour/credis) for Redis connections. Credis offers a native pure-PHP implementation which will automatically switch to using [phpredis](https://github.com/phpredis/phpredis) for improved performance if it's available.
 
 To create a lock manager:
 
@@ -54,9 +57,3 @@ To release a lock:
 It is possible to setup the number of retries (by default 3) and the retry
 delay (by default 200 milliseconds) used to acquire the lock.
 
-The retry delay is actually chosen at random between `$retryDelay / 2` milliseconds and
-the specified `$retryDelay` value.
-
-**Disclaimer**: As stated in the original antirez's version, this code implements an algorithm
-which is currently a proposal, it was not formally analyzed. Make sure to understand how it works
-before using it in your production environments.

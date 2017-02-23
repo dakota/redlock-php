@@ -17,7 +17,7 @@
     },
     "suggest": {
         "ext-redis": "Native PHP extension for Redis connectivity. Credis will automatically utilize when available."
-    }
+    },
     "autoload": {
         "psr-4": {
             "RedLock\\": "src/"
