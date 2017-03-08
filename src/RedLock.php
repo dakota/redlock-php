@@ -161,6 +161,6 @@ class RedLock
 				return 0
 			end
 		';
-		return $instance->eval($script, [$resource, $token], 1);
+		return $instance->eval($script, [$resource] [$token]);
 	}
 }
