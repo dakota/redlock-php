@@ -123,7 +123,7 @@ class RedLock
 				list($host, $port, $timeout) = $server;
 
 				$redis = new Credis_Client($host, $port, $timeout);
-				$redis->connect();
+				//$redis->connect();
 
 				$this->instances[] = $redis;
 			}
@@ -141,7 +141,18 @@ class RedLock
 	 */
 	protected function lockInstance($instance, $resource, $token, $ttl)
 	{
-		return $instance->set($resource, $token, ['NX', 'PX' => $ttl]);
+		//try
+		//{
+			$instance->connect();
+			$ret = $instance->set($resource, $token, ['NX', 'PX' => $ttl]);
+			$instance->close();
+
+			return $ret;
+		//}
+		//catch (Exception $ex)
+		//{
+		//	return false;
+		//}
 	}
 
 	/**
@@ -161,6 +172,18 @@ class RedLock
 				return 0
 			end
 		';
-		return $instance->eval($script, [$resource], [$token]);
+
+		try
+		{
+			$instance->connect();
+			$ret = $instance->eval($script, [$resource], [$token]);
+			$instance->close();
+
+			return $ret;
+		}
+		catch (Exception $ex)
+		{
+			return false;
+		}
 	}
 }
