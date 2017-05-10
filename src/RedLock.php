@@ -144,6 +144,17 @@ class RedLock
 		//try
 		//{
 			$instance->connect();
+
+			try
+			{
+				$instance->ping();
+			}
+			catch (RedisException $ex)
+			{
+				// Try to reconnect
+				$instance->connect();
+			}
+
 			$ret = $instance->set($resource, $token, ['NX', 'PX' => $ttl]);
 			$instance->close();
 
@@ -173,17 +184,17 @@ class RedLock
 			end
 		';
 
-		try
-		{
+		//try
+		//{
 			$instance->connect();
 			$ret = $instance->eval($script, [$resource], [$token]);
 			$instance->close();
 
 			return $ret;
-		}
-		catch (Exception $ex)
-		{
-			return false;
-		}
+		//}
+		//catch (Exception $ex)
+		//{
+		//	return false;
+		//}
 	}
 }
