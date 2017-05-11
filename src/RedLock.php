@@ -149,9 +149,10 @@ class RedLock
 			{
 				$instance->ping();
 			}
-			catch (RedisException $ex)
+			catch (\Exception $ex)
 			{
 				// Try to reconnect
+				$instance->close();
 				$instance->connect();
 			}
 
