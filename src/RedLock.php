@@ -156,7 +156,19 @@ class RedLock
 				$instance->connect();
 			}
 
-			$ret = $instance->set($resource, $token, ['NX', 'PX' => $ttl]);
+			try
+			{
+				$ret = $instance->set($resource, $token, ['NX', 'PX' => $ttl]);
+			}
+			catch (\Exception $ex)
+			{
+				// Try to reconnect
+				$instance->close();
+				$instance->connect();
+
+				$ret = $instance->set($resource, $token, ['NX', 'PX' => $ttl]);
+			}
+
 			$instance->close();
 
 			return $ret;
