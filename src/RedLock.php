@@ -141,49 +141,40 @@ class RedLock
 	 */
 	protected function lockInstance($instance, $resource, $token, $ttl)
 	{
-		//try
-		//{
+		try
+		{
 			$instance->connect();
+		}
+		catch (\Exception $ex)
+		{
+			// Try to reconnect
+			$instance->close();
+			$instance->connect();
+		}
 
-			try
-			{
-				$instance->ping();
-			}
-			catch (\Exception $ex)
-			{
-				// Try to reconnect
-				$instance->close();
-				$instance->connect();
-			}
+		try
+		{
+			$ret = $instance->set($resource, $token, ['NX', 'PX' => $ttl]);
+		}
+		catch (\Exception $ex)
+		{
+			// Try to reconnect
+			$instance->close();
+			$instance->connect();
 
 			try
 			{
 				$ret = $instance->set($resource, $token, ['NX', 'PX' => $ttl]);
 			}
-			catch (\Exception $ex)
+			catch (\Exception $ex2)
 			{
-				// Try to reconnect
-				$instance->close();
-				$instance->connect();
-
-				try
-				{
-					$ret = $instance->set($resource, $token, ['NX', 'PX' => $ttl]);
-				}
-				catch (\Exception $ex2)
-				{
-					$ret = false;
-				}
+				$ret = false;
 			}
+		}
 
-			$instance->close();
+		$instance->close();
 
-			return $ret;
-		//}
-		//catch (Exception $ex)
-		//{
-		//	return false;
-		//}
+		return $ret;
 	}
 
 	/**
@@ -204,17 +195,33 @@ class RedLock
 			end
 		';
 
-		//try
-		//{
+		try
+		{
 			$instance->connect();
 			$ret = $instance->eval($script, [$resource], [$token]);
 			$instance->close();
 
 			return $ret;
-		//}
-		//catch (Exception $ex)
-		//{
-		//	return false;
-		//}
+		}
+		catch (Exception $ex)
+		{
+			// Try again...
+			$instance->close();
+
+			try
+			{
+				$instance->connect();
+				$ret = $instance->eval($script, [$resource], [$token]);
+				$instance->close();
+
+				return $ret;
+			}
+			catch (Exception $ex)
+			{
+				;
+			}
+		}
+
+		return false;
 	}
 }
