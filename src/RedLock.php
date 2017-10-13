@@ -1,5 +1,7 @@
 <?php
 
+namespace RedLock;
+
 class RedLock
 {
 	protected $retryDelay;
@@ -122,7 +124,7 @@ class RedLock
 			{
 				list($host, $port, $timeout) = $server;
 
-				$redis = new Credis_Client($host, $port, $timeout);
+				$redis = new \Credis_Client($host, $port, $timeout);
 				//$redis->connect();
 
 				$this->instances[] = $redis;
