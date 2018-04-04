@@ -1,6 +1,7 @@
 {
     "name": "dakota/redlock-php",
     "description": "Redis distributed locks in PHP",
+    "license": "MIT",
     "authors": [
         {
             "name": "Walther Lalk",
@@ -27,6 +28,4 @@
             "RedLock\\": "src/"
         }
     }
-
-
 }
