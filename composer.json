@@ -1,7 +1,11 @@
 {
-    "name": "chargeover/redlock-php",
+    "name": "dakota/redlock-php",
     "description": "Redis distributed locks in PHP",
     "authors": [
+        {
+            "name": "Walther Lalk",
+            "email": "emailme@waltherlalk.com"
+        },
         {
             "name": "Ronny Lopez",
             "email": "ronny@tangotree.io"
